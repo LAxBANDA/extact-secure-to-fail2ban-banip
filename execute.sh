@@ -60,6 +60,16 @@ for file in "$DIRECTORY"/*.txt; do
             fail2ban-client set sshd banip "$ip"
         fi
     done < "$file"
+
+    # Eliminar el archivo después de procesarlo
+    echo "Eliminando archivo: $file"
+    rm "$file"
 done
 
-echo "Procesamiento completo."
+# Eliminar el directorio si está vacío
+if [ -d "$DIRECTORY" ] && [ ! "$(ls -A $DIRECTORY)" ]; then
+    echo "Eliminando directorio vacío: $DIRECTORY"
+    rmdir "$DIRECTORY"
+fi
+
+echo "Procesamiento completo. Archivos eliminados."
