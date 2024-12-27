@@ -3,7 +3,7 @@ const path = require('path');
 const readline = require('readline');
 
 // Directorio donde buscar archivos
-const logDirectory = path.join(__dirname, '/var/log');;
+const logDirectory = '/var/log';
 const searchPattern = /secure/; // Archivos que contengan "secure" en el nombre
 
 // Directorio de salida
