@@ -2,7 +2,7 @@
 
 # Ruta del archivo de Node.js que procesa los logs
 NODE_SCRIPT="./procesar_logs.js"
-PATTERN="${2:-secure}" # Por defecto, "secure"
+PATTERN="${1:-secure}" # Por defecto, "secure"
 
 SSH_IP=$(echo $SSH_CLIENT | awk '{ print $1 }')
 
