@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Nombre de la sesión de screen (puedes cambiarlo si lo deseas)
+SCREEN_SESSION_NAME="fail2ban-session"
+
 # Ruta del archivo de Node.js que procesa los logs
 NODE_SCRIPT="./procesar_logs.js"
 
@@ -9,18 +12,27 @@ if [ ! -f "$NODE_SCRIPT" ]; then
     exit 1
 fi
 
-# Ejecutar el script de Node.js
-echo "Ejecutando el script de Node.js..."
-node "$NODE_SCRIPT"
-
-# Verificar si el script Node.js se ejecutó correctamente
-if [ $? -ne 0 ]; then
-    echo "El script de Node.js terminó con un error."
-    exit 1
+# Verificar si la sesión de screen ya existe
+if screen -list | grep -q "$SCREEN_SESSION_NAME"; then
+    echo "La sesión de screen '$SCREEN_SESSION_NAME' ya está en ejecución."
+else
+    echo "Iniciando una nueva sesión de screen..."
+    # Crear una nueva sesión de screen en segundo plano y ejecutar el script de Node.js
+    screen -dmS "$SCREEN_SESSION_NAME" bash -c "node $NODE_SCRIPT"
+    
+    # Verificar si el script de Node.js se ejecutó correctamente
+    if [ $? -ne 0 ]; then
+        echo "Hubo un error al ejecutar el script de Node.js dentro de screen."
+        exit 1
+    fi
+    echo "El script de Node.js se está ejecutando en la sesión de screen '$SCREEN_SESSION_NAME'."
 fi
 
-echo "Script de Node.js ejecutado con éxito."
+# Esperar un poco para asegurarse de que el script de Node.js termine su ejecución
+echo "Esperando que el script de Node.js termine..."
+sleep 10
 
+# Ahora procesamos las IPs y ejecutamos los comandos fail2ban
 # Directorio donde están los archivos generados por el programa de Node.js
 DIRECTORY="./secure-failed-ips"
 
