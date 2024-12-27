@@ -6,7 +6,7 @@ SCREEN_SESSION_NAME="fail2ban-session"
 # Ruta del archivo de Node.js que procesa los logs
 NODE_SCRIPT="./procesar_logs.js"
 
-EXCLUDE_IP=$SSH_CLIENT | awk '{ print $1}'
+EXCLUDE_IP=echo $SSH_CLIENT | awk '{ print $1}'
 
 # Verificar si el archivo de Node.js existe
 if [ ! -f "$NODE_SCRIPT" ]; then
