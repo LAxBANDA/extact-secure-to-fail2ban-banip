@@ -18,7 +18,7 @@ if screen -list | grep -q "$SCREEN_SESSION_NAME"; then
 else
     echo "Iniciando una nueva sesión de screen..."
     # Crear una nueva sesión de screen en segundo plano y ejecutar el script de Node.js
-    screen -dmS "$SCREEN_SESSION_NAME" bash -c "node $NODE_SCRIPT"
+    screen -dmS "$SCREEN_SESSION_NAME" bash -c "node $NODE_SCRIPT echo $SSH_CLIENT | awk '{ print $1}'"
     
     # Verificar si el script de Node.js se ejecutó correctamente
     if [ $? -ne 0 ]; then

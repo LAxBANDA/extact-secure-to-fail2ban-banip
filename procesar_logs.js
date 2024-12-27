@@ -2,6 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
+const excludeIP = process.argv[2];
+// Verificar si se pasó una IP como parámetro
+if (!excludeIP || !/^(?:\d{1,3}\.){3}\d{1,3}$/.test(excludeIP)) {
+    console.log('Debes pasar una IP válida para excluir como parámetro (tu ipv4 actual).');
+    process.exit(1);
+}
+
 // Directorio donde buscar archivos
 const logDirectory = '/var/log';
 const searchPattern = /secure/; // Archivos que contengan "secure" en el nombre
@@ -17,7 +24,7 @@ function parseLine(line, ips) {
     const match = line.match(ipRegex);
     if (match) {
         const ip = match[0];
-        ips.add(ip); // Agrega al Set para evitar duplicados
+        (ip !== excludeIP) && ips.add(ip); // Agrega al Set para evitar duplicados
     }
 }
 
