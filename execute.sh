@@ -8,6 +8,9 @@ NODE_SCRIPT="./procesar_logs.js"
 
 SSH_IP=$(echo $SSH_CLIENT | awk '{ print $1 }')
 
+TMUX_SESSION_NAME="fail2ban-session"
+
+
 # Verificar si el archivo de Node.js existe
 if [ ! -f "$NODE_SCRIPT" ]; then
     echo "El script de Node.js ($NODE_SCRIPT) no existe. Asegúrate de que está en el directorio actual."
