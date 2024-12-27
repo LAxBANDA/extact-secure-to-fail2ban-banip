@@ -14,20 +14,14 @@ if [ ! -f "$NODE_SCRIPT" ]; then
     exit 1
 fi
 
-# Verificar si la sesión de screen ya existe
-if screen -list | grep -q "$SCREEN_SESSION_NAME"; then
-    echo "La sesión de screen '$SCREEN_SESSION_NAME' ya está en ejecución."
+# Verificar si la sesión de tmux ya existe
+if tmux has-session -t "$TMUX_SESSION_NAME" 2>/dev/null; then
+    echo "La sesión de tmux '$TMUX_SESSION_NAME' ya está en ejecución."
 else
-    echo "Iniciando una nueva sesión de screen..."
-    # Crear una nueva sesión de screen en segundo plano y ejecutar el script de Node.js
-    screen -dmS "$SCREEN_SESSION_NAME" bash -c "node $NODE_SCRIPT $SSH_IP"
-    
-    # Verificar si el script de Node.js se ejecutó correctamente
-    if [ $? -ne 0 ]; then
-        echo "Hubo un error al ejecutar el script de Node.js dentro de screen."
-        exit 1
-    fi
-    echo "El script de Node.js se está ejecutando en la sesión de screen '$SCREEN_SESSION_NAME'."
+    echo "Iniciando una nueva sesión de tmux..."
+    # Crear una nueva sesión de tmux y ejecutar el script de Node.js con la IP SSH y la IP a excluir
+    tmux new-session -d -s "$TMUX_SESSION_NAME" "node $NODE_SCRIPT $SSH_IP"
+    echo "El script de Node.js se está ejecutando en la sesión de tmux '$TMUX_SESSION_NAME'."
 fi
 
 # Esperar un poco para asegurarse de que el script de Node.js termine su ejecución
