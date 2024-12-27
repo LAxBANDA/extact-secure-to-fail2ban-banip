@@ -2,6 +2,7 @@
 
 # Ruta del archivo de Node.js que procesa los logs
 NODE_SCRIPT="./procesar_logs.js"
+PATTERN="${2:-secure}" # Por defecto, "secure"
 
 SSH_IP=$(echo $SSH_CLIENT | awk '{ print $1 }')
 
@@ -11,7 +12,7 @@ if [ ! -f "$NODE_SCRIPT" ]; then
     exit 1
 fi
 
-node $NODE_SCRIPT $SSH_IP
+node $NODE_SCRIPT $SSH_IP $PATTERN
 
 # Crear una nueva sesión de tmux y ejecutar el script de Node.js con la IP SSH y la IP a excluir
 echo "El script de Node.js se está ejecutando"

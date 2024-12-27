@@ -9,9 +9,10 @@ if (!excludeIP || !/^(?:\d{1,3}\.){3}\d{1,3}$/.test(excludeIP)) {
     process.exit(1);
 }
 
+const pattern = process.argv[3] || "secure";
+
 // Directorio donde buscar archivos
 const logDirectory = '/var/log';
-const searchPattern = /secure/; // Archivos que contengan "secure" en el nombre
 
 // Directorio de salida
 const outputDirectory = path.join(process.cwd(), 'secure-failed-ips');
@@ -61,11 +62,10 @@ async function processFile(filePath) {
 // Buscar archivos en el directorio y procesarlos
 function processLogs(directory) {
     try {
-        const files = fs.readdirSync(directory);
-        const logFiles = files.filter((file) => searchPattern.test(file)); // Filtrar archivos por patrón
+        const logFiles = fs.readdirSync(directory).filter((file) => file.includes(pattern) && !file.includes(".gz"))
 
         if (logFiles.length === 0) {
-            console.log(`No se encontraron archivos con el patrón "${searchPattern}" en ${directory}`);
+            console.log(`No se encontraron archivos en ${logsDir} que coincidan con el patrón: ${pattern}`);
             return;
         }
 
