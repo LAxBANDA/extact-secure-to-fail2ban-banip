@@ -6,6 +6,8 @@ SCREEN_SESSION_NAME="fail2ban-session"
 # Ruta del archivo de Node.js que procesa los logs
 NODE_SCRIPT="./procesar_logs.js"
 
+EXCLUDE_IP=$SSH_CLIENT | awk '{ print $1}'
+
 # Verificar si el archivo de Node.js existe
 if [ ! -f "$NODE_SCRIPT" ]; then
     echo "El script de Node.js ($NODE_SCRIPT) no existe. Asegúrate de que está en el directorio actual."
@@ -18,7 +20,7 @@ if screen -list | grep -q "$SCREEN_SESSION_NAME"; then
 else
     echo "Iniciando una nueva sesión de screen..."
     # Crear una nueva sesión de screen en segundo plano y ejecutar el script de Node.js
-    screen -dmS "$SCREEN_SESSION_NAME" bash -c "node $NODE_SCRIPT echo $SSH_CLIENT | awk '{ print $1}'"
+    screen -dmS "$SCREEN_SESSION_NAME" bash -c "node $NODE_SCRIPT $EXCLUDE_IP"
     
     # Verificar si el script de Node.js se ejecutó correctamente
     if [ $? -ne 0 ]; then
